@@ -1,6 +1,6 @@
-# import sys
-# sys.stdin=open("input.in","r")
-# sys.stdout=open("output.out","w") 
+import sys
+sys.stdin=open("input.in","r")
+sys.stdout=open("output.out","w") 
 
 t = int(input())
 for _ in range(t):
