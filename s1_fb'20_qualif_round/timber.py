@@ -1,60 +1,46 @@
-# import sys
-# sys.stdin=open("input.in","r")
-# sys.stdout=open("output.out","w") 
-
-# number of test case
-t = int(input()) 
-
-for _ in range(t):
-
+for _ in range(int(input())):
 	# number of tree Eva has assigned
-	n = int(input()) 
-
-	pos_hth = []
-
+	n=int(input())
+	l=[]
 	# collecting position and height of each tree
-	for i in range(n):
-		pos,hth = map(int,input().split())
-		pos_hth.append((pos,hth))
-
-	# arrange them in ascending order W.R.T position of trees
-	pos_hth.sort()
-
-	# will Dp to find out the largest timber interval 
-	# we will be storing maximum length of interval for each tree using dict
-	
-	dp = {}
 
 	for i in range(n):
-		curr = pos_hth[i][0]	
-
-		# here we covered the case if tree fell towards right after chopped 
-		if curr+pos_hth[i][1] not in dp:
-			if curr not in dp:
-				dp[curr+pos_hth[i][1]] = pos_hth[i][1]
+		l.append(list(map(int,input().split())))
+	# sorting trees according to there position 
+	l.sort()
+	ma=0
+	s=set()
+	d={}
+	for i in range(n):
+		# left position of tree when fall
+		x=l[i][0]-l[i][1]
+		ma=max(ma,l[i][1])
+		# right position of tree when fall
+		y=l[i][0]+l[i][1]
+		if l[i][0] in s:
+			ma=max(ma,d[l[i][0]]+l[i][1])
+			if y in d:
+				d[y]=max(d[l[i][0]]+l[i][1],d[y])
 			else:
-				dp[curr+pos_hth[i][1]] = pos_hth[i][1] + dp[curr]
-
+				d[y]=d[l[i][0]]+l[i][1]
+			s.add(y)
 		else:
-			if curr not in dp:
-				dp[curr+pos_hth[i][1]] = max(pos_hth[i][1], dp[curr+pos_hth[i][1]])
+			s.add(y)
+			if y in d:
+				d[y]=max(l[i][1],d[y])
 			else:
-				dp[curr+pos_hth[i][1]] = max(pos_hth[i][1] + dp[curr], dp[curr+pos_hth[i][1]])
-
-		# remaning case which if tree fell left side
-
-		if curr-pos_hth[i][1] not in dp:
-			if curr not in dp:
-				dp[curr] = pos_hth[i][1]
+				d[y]=l[i][1]
+		if x in s:
+			ma=max(ma,d[x]+l[i][1])
+			s.add(l[i][0])
+			if l[i][0] in d:
+				d[l[i][0]]=max(d[x]+l[i][1],d[l[i][0]])
 			else:
-				dp[curr] = max(dp[curr],pos_hth[i][1])
-
+				d[l[i][0]]=d[x]+l[i][1]
 		else:
-			if curr not in dp:
-				dp[curr] = dp[curr-pos_hth[i][1]]+pos_hth[i][1]
+			s.add(l[i][0])
+			if l[i][0] in d:
+				d[l[i][0]]=max(l[i][1],d[l[i][0]])
 			else:
-				dp[curr] = max(dp[curr],dp[curr-pos_hth[i][1]]+pos_hth[i][1])
-
-	ans = max(dp.values())
-	# format answer as required 
-	print("Case #{}: {}".format(_+1,ans))
+				d[l[i][0]]=l[i][1]
+	print("Case #%d: %d"%(_+1,ma))
