@@ -1,37 +1,27 @@
-# import sys
-# sys.stdin=open("input.in","r")
-# sys.stdout=open("output.out","w")
-
-t = int(input())
-for _ in range(t):
-	n = int(input())  # total number of countries
-	I = input()		  
-	O = input()
-
-	output = [["N"]*n for i in range(n)]
-
+for _ in range(int(input())):
+	n=int(input())
+	incom=list(input())
+	outcom=list(input())
+# 	dp for calculating answer
+	ans=[["" for i in range(n)] for j in range(n)]
 	for i in range(n):
-		output[i][i] = "Y"
-
-		# covering first half 
-		p = i-1
-		while p > -1:
-			if O[p+1] == "Y" and I[p] == "Y":
-				output[i][p] = "Y"
+		ans[i][i]="Y"
+		for j in range(i-1,-1,-1):
+			if ans[i][j+1]=="Y":
+				if incom[j]=="Y" and outcom[j+1]=="Y":
+					ans[i][j]="Y"
+				else:
+					ans[i][j]="N"
 			else:
-				break
-			p -= 1
-
-		# Covering second half 
-		p = i+1
-		while p < n:
-			if O[p-1] == "Y" and I[p] == "Y":
-				output[i][p] = "Y"
+				ans[i][j]="N"
+		for j in range(i+1,n):
+			if ans[i][j-1]=="Y":
+				if incom[j]=="Y" and outcom[j-1]=="Y":
+					ans[i][j]="Y"
+				else:
+					ans[i][j]="N"
 			else:
-				break
-			p += 1
-
-	# Printing output in required format
-	print("Case #{}:".format(_+1))
-	for i in output:
+				ans[i][j]="N"
+	print("Case #%d: "%(_+1))
+	for i in ans:
 		print("".join(i))
